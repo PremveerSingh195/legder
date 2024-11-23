@@ -93,7 +93,15 @@ const HeaderItems = [
     name: "For Developers",
   },
   { id: 6, name: "Support" },
-  { id: 7, name: "English" },
+  {
+    id: 7,
+    name: "English",
+    subNames: [
+      { id: 1, item: "one" },
+      { id: 2, item: "one" },
+      { id: 3, item: "one" },
+    ],
+  },
 ];
 
 function Header() {
@@ -101,18 +109,30 @@ function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isclicked, setisClicked] = useState(null);
 
+  const handleclick = (id) => {
+    if (isclicked === id) {
+      setisClicked(null);
+    } else {
+      setisClicked(id);
+    }
+  };
+
   return (
     <div className="flex flex-col">
-      <div className="bg-[#000000] w-screen h-16 flex flex-row justify-between items-center">
-        <div className="lg:ml-28 ml-3 md:ml-7 lg:hidden">
-          <SmallScreenLogo />
+      <div
+        className={`bg-[#000000]  w-screen h-16 flex  flex-row  justify-between items-center ${
+          isOpen ? "bg-white" : "bg-[#000000]"
+        }`}
+      >
+        <div className="lg:ml-28  lg:hidden sm1:ml-8 md:ml-12 ml-5">
+          <SmallScreenLogo fillcolor={isOpen ? "black" : "white"} />
         </div>
         <div className="hidden lg:block lg:ml-10">
           <Logo />
         </div>
-        <div className="flex flex-row lg:hidden justify-center items-center gap-4 mr-5 md:mr-7">
+        <div className="flex flex-row lg:hidden justify-center items-center gap-5 mr-5 sm1:mr-8 md:mr-12 lg:mr-6">
           <button>
-            <ShoppingcartLogo />
+            <ShoppingcartLogo fillcolor={isOpen ? "black" : "white"} />
           </button>
           <button onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <Cross /> : <Menuicon />}
@@ -126,28 +146,54 @@ function Header() {
                 className="text-white cursor-pointer relative font-semibold text-sm"
                 onMouseEnter={() => setHoverItemID(item.id)}
                 onMouseLeave={() => setHoverItemID(null)}
+                onClick={() => handleclick(item.id)}
               >
-                {item.name}
-                {hoverItemId === item.id && item.subNames && (
-                  <div className="text-black py-5 pl-3 pr-8 absolute w-52 bg-white mt-2">
-                    <ul className="flex flex-col gap-2 w-full">
-                      {item.subNames.map((item) => (
-                        <li key={item.id} className="text-sm font-semibold">
-                          {item.item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                <div className="flex flex-row justify-center items-center gap-1.5">
+                  {item.name}
+                  {item.subNames && (
+                    <svg
+                      className={`w-3 h-3 transform transition-transform ${
+                        isclicked === item.id ? "rotate-0" : "rotate-0"
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  )}
+                </div>
+                {(hoverItemId === item.id || isclicked === item.id) &&
+                  item.subNames && (
+                    <div className="relative">
+                      <div className="absolute left-3 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-white"></div>
+                      <div className="text-black py-5 pl-3 pr-8 absolute w-52 bg-white mt-2">
+                        <ul className="flex flex-col gap-5 w-full">
+                          {item.subNames.map((item) => (
+                            <li key={item.id} className="text-sm font-semibold">
+                              {item.item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  )}
               </li>
             ))}
+            <ShoppingcartLogo fillcolor={"white"} />
           </ul>
         </div>
       </div>
       <div>
         {isOpen && (
-          <div className="bg-[#FFFFFF] lg:hidden text-black mt-3">
-            <ul className="flex flex-col gap-4 text-sm font-bold ml-3">
+          <div className="bg-[#FFFFFF] lg:hidden text-black mt-3 mb-4">
+            <ul className="flex flex-col gap-4 text-sm font-bold ml-3 ">
               {HeaderItems.map((item) => (
                 <li
                   key={item.id}
